@@ -1,3 +1,5 @@
+import sys
+import json
 import azure.functions as func
 import logging
 import os
@@ -40,14 +42,12 @@ def get_visitor_count(req: func.HttpRequest) -> func.HttpResponse:
         # Fetch the existing count document
         item = None
         try:
-            item = container.read_item(
-                item="visitorCount", partition_key="visitorCount"
-            )
+            item = container.read_item(item="1", partition_key="1")
             logging.debug(f"Found item: {item}, the existing count document.")
         except Exception as e:
             logging.error(f"The count document not found or an error occurred: {e}")
             # If the document is not found, create it
-            item = {"id": "visitorCount", "count": 42}
+            item = {"id": "1", "count": 42}
         current_count = item.get("count", 42)
         # Validate if the current count is a number, fallback to 42 if not
         if not isinstance(current_count, int):
@@ -60,18 +60,18 @@ def get_visitor_count(req: func.HttpRequest) -> func.HttpResponse:
         item["count"] = new_count
 
         # Upsert the updated count document
-        container.upsert_item(item=item)
+        container.upsert_item(item)
         logging.info(f"Updated visitor count to {new_count}")
 
         # Return the JSON response
         response_body = {"count": new_count}
         return func.HttpResponse(
-            body=str(response_body), status_code=200, mimetype="application/json"
+            body=json.dumps(response_body), status_code=200, mimetype="application/json"
         )
     except Exception as e:
         # Catch any unexpected errors and log them
         logging.error(f"Error updating visitor count: {e}", exc_info=True)
         error_body = {"error": "Unable to retrieve and update visitor count."}
         return func.HttpResponse(
-            body=str(error_body), status_code=500, mimetype="application/json"
+            body=json.dumps(error_body), status_code=500, mimetype="application/json"
         )

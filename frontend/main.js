@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", (event) => {
-    const functionApi = "https://<your-azure-function-url>"; // My Azure Function App endpoint url
+    const functionApi = "http://localhost:7071/api/http_trigger_py"; // Azure Function App endpoint url
     getVisitCount(functionApi);
 });
 
 async function getVisitCount(apiUrl) {
     // Default count in case the fetch fails.
-    let count = 47;
+    let count = 42;
     
     try {
         // Use the Fetch API with proper error checking
@@ -17,7 +17,7 @@ async function getVisitCount(apiUrl) {
             // Fallback message to the user
             const counterElement = document.getElementById("counter");
             if (counterElement) {
-                counterElement.textContent = "Unable to load visitor count."; // Placeholder indicating data couldn't be loaded
+                counterElement.textContent = "Unable to load visitor count."; // Placeholder to indicate data couldn't be loaded
             }
             return; // Stop execution here if the call failed
         }
@@ -40,7 +40,7 @@ async function getVisitCount(apiUrl) {
             return;
         }
         
-        counterElement.textContent = count;
+        counterElement.textContent = count + " Visit(s)";
         console.log("Website successfully fetched and displayed the visitor count.");
         
     } catch (error) {
