@@ -30,7 +30,7 @@ jobs:
             az storage blob upload-batch \
               --account-name cloudresumechallengedp \
               --auth-mode key \
-              --destination '$web' \
+              --destination "$web" \
               --source ./backend  # Upload from backend folder
 
     # Step 4: Purge CDN to refresh backend content (Optional)

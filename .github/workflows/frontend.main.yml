@@ -27,7 +27,7 @@ jobs:
             az storage blob upload-batch \
               --account-name cloudresumechallengedp \
               --auth-mode key \
-              --destination '$web' \
+              --destination "$web" \
               --source ./frontend
 
     - name: Purge CDN Endpoint (Optional)
