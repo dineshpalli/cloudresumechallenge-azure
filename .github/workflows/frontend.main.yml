@@ -1,0 +1,56 @@
+name: deploy_frontend
+# GitHub Actions workflow to deploy the frontend of the Cloud Resume Challenge to Azure Blob Storage
+
+on:
+    push:
+        # Trigger this workflow whenever changes are pushed to the 'main' branch
+        branches: [ main ]
+        # Run the workflow only if changes are made within the 'frontend' folder
+        paths:
+            - 'frontend/**' 
+
+jobs:
+  build:
+    # Run this job on the latest Ubuntu virtual machine
+    runs-on: ubuntu-latest
+    steps:
+    
+    # Step 1: Checkout the code from the repository (this pulls the latest code to the runner)
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Login to Azure using the service principal credentials stored in GitHub Secrets
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+          creds: ${{ secrets.CRC_AZURE_CREDS }}  # The credentials must be set in GitHub Secrets
+
+    # Step 3: Upload the frontend files to Azure Blob Storage (Static Website Hosting)
+    - name: Upload to Blob Storage
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+            # Upload the contents of the frontend folder to the $web container for static site hosting
+            az storage blob upload-batch \
+              --account-name cloudresumechallengedp \  # Use the storage account 'cloudresumechallengedp'
+              --auth-mode key \  # Authenticate using the storage account key
+              -d '$web' \  # Target the special $web container (where static site files are stored)
+              -s ./frontend  # Source is the 'frontend' directory from the repo
+
+    # Step 4: Purge the Azure CDN endpoint to ensure new changes reflect immediately
+    - name: Purge CDN Endpoint (Optional)
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+           # Purge cached files from the CDN to avoid serving stale content
+           az cdn endpoint purge \
+             --content-paths "/*" \  # Purge all files from the root path
+             --profile-name "cloudresumechallengedp" \  # Replace with your CDN profile name
+             --name "cloudresumechallendedp-dgh5hahkb9cmh8h3.z03.azurefd.net" \  # Replace with your CDN endpoint name
+             --resource-group cloudresumechallenge-dineshpalli  # Use the resource group
+
+  # Step 5: Log out from Azure to clean up the session (best practice)
+    - name: Logout
+      run: |
+            az logout
+      if: always()  # This step will run even if the previous steps fail to ensure logout
