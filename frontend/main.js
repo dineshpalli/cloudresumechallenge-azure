@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", (event) => {
-    const functionApiUrl = "https://getresumevisitorcounter.azurewebsites.net/api/GetResumeVisitorCounter"; // Updated to match actual function endpoint
+    const functionApiUrl = "https://getresumevisitorcounter.azurewebsites.net/api/http_trigger_py?code=tKgqHQitkjQJ9IGwsg76eTshQqndhnjXMjXGepJ1ThiBAzFumKYAng%3D%3D"; // THe actual function endpoint
     const localFunctionApi = "http://localhost:7071/api/http_trigger_py"; // For local testing
 
     // Use the production URL when deployed, fallback to local during development
