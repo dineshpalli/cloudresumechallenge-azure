@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinesh Palli's CV</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="images/favicon/site.webmanifest">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb; /* Blue */
+            --secondary: #4f46e5; /* Darker Blue */
+            --text: #1f2937;
+            --bg: #ffffff;
+            --card-bg: #f3f4f6;
+            --inner-card-bg: #e5e7eb; /* Slightly different from --card-bg */
+            --hover: #dbeafe;
+            --border: #e5e7eb;
+            --inner-border: #14b8a6; /* Teal for inner boxes in light mode */
+        }
+
+        [data-theme="dark"] {
+            --primary: #60a5fa; /* Light Blue */
+            --secondary: #818cf8; /* Purple-ish Blue */
+            --text: #f3f4f6;
+            --bg: #111827;
+            --card-bg: #1f2937;
+            --inner-card-bg: #374151; /* Slightly different from --card-bg */
+            --hover: #374151;
+            --border: #374151;
+            --inner-border: #2dd4bf; /* Light Teal for inner boxes in dark mode */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            position: relative;
+            padding: 4rem 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .profile-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            animation: profilePop 1s ease-out;
+        }
+
+        @keyframes profilePop {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .profile-ring {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            animation: ringRotate 10s linear infinite;
+        }
+
+        @keyframes ringRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 1rem 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleSlide 1s ease-out;
+        }
+
+        @keyframes titleSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .contact-item a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .section {
+            margin: 3rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-card {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Outer Containers for Work Experience and Education */
+        .experience-container,
+        .education-container {
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .experience-container::before,
+        .education-container::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--border);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .experience-container:hover::before,
+        .experience-container.active::before,
+        .education-container:hover::before,
+        .education-container.active::before {
+            transform: scaleY(1);
+            background: var(--primary);
+        }
+
+        /* Inner Items for Work Experience and Education */
+        .experience-item,
+        .education-item {
+            background-color: var(--inner-card-bg); /* Uses the new inner-card-bg variable */
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .experience-item::before,
+        .education-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--inner-border); /* Uses the new inner-border variable */
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .experience-item.active::before,
+        .experience-item:hover::before,
+        .education-item.active::before,
+        .education-item:hover::before {
+            transform: scaleY(1);
+            background: var(--inner-border); /* Ensures the inner border color remains consistent */
+        }
+
+        .experience-header,
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .experience-header:hover h3,
+        .experience-header:hover span,
+        .education-header:hover h3,
+        .education-header:hover span {
+            color: var(--primary);
+            /* Removed text-decoration: underline; */
+        }
+
+        .experience-details,
+        .education-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .experience-item.active .experience-details,
+        .education-item.active .education-details {
+            max-height: 1000px; /* Arbitrary large value for smooth expansion */
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        .visitor-counter {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        .visitor-counter:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .experience-header,
+            .education-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="visitor-counter">12345 Profile Visits</div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-sun"></i>
+    </button>
+
+    <div class="container">
+        <header>
+            <div class="profile-container">
+                <div class="profile-ring"></div>
+                <img src="images/DP_2023_crop.jpg" alt="Dinesh Palli" class="profile-img">
+            </div>
+            <h1>Dinesh Palli</h1>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    +49-15166226565
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:dineshpalli@web.de">dineshpalli@web.de</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Wandsbeker Chaussee 25, Hamburg, 22089, Germany
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-linkedin"></i>
+                    <a href="https://www.linkedin.com/in/dineshpalli/" target="_blank">LinkedIn</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-xing"></i>
+                    <a href="https://www.xing.com/profile/Dinesh_Palli/" target="_blank">Xing</a>
+                </div>
+            </div>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">Profile</h2>
+            <div class="skill-card">
+                <ul>
+                    <li>4+ years in data science, analysis and visualization: machine learning, BI, KPI dashboard reporting, digitization and automation, Python, SQL, R; developed and documented open-source data analysis tools with >300 stars on <a href="https://github.com/dineshpalli" target="_blank">GitHub</a>.</li>
+                    <li>Proven track record in business environments securing 4 partnerships and contributing to a 7.4% increase in market reach.</li>
+                    <li>Experienced in Biomedical AI, computational biology, developing visualization tools for datasets with >250k rows.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Programming Languages</h3>
+                    <p>Python, Advanced SQL, R</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Version Control and Others</h3>
+                    <p>Git, <a href="https://github.com/dineshpalli" target="_blank">GitHub</a>, GitLab (CI/CD), Bit Bucket, Docker, <a href="https://leetcode.com/u/DineshPalli/" target="_blank">LeetCode</a></p>
+                </div>
+                <div class="skill-card">
+                    <h3>Libraries & Frameworks</h3>
+                    <p>PyTorch, Scikit-Learn, NumPy, Pandas, BASH</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Machine Learning Techniques</h3>
+                    <p>Regression analysis, Clustering, Classification, K-NN, Deep Learning</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Models</h3>
+                    <p>Vision Transformers, Student-Teacher Models, K-Means Clustering, PCA, Autoencoders</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Data Visualization Tools</h3>
+                    <p>Matplotlib, Seaborn, <a href="https://public.tableau.com/app/profile/dineshpalli" target="_blank">Tableau</a>, Google Analytics</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Statistics</h3>
+                    <p>A/B testing, Ad-hoc analyses, Time series Analysis, Attribution Modelling</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Work Experience</h2>
+            <div class="experience-container">
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <h3>Business Analyst</h3>
+                        <span>Feb 2024 – Present</span>
+                    </div>
+                    <div class="experience-details">
+                        <h4>Olympus Europa EMEA - Hamburg, Germany</h4>
+                        <ul>
+                            <li>Reduced processing time by 37.48% by digitizing operational processes using Microsoft Power Apps.</li>
+                            <li>Engineered an end-to-end data pipeline in Python including ETL processes, automated regulatory reporting, database management, and internal ERP systems.</li>
+                            <li>Automated KPI dashboards with Power BI, data modeling, and statistical analysis.</li>
+                            <li>Collaborated in the healthcare aggregate spend disclosure process, ensuring compliance with EMEA regulations and GDPR legislation.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <h3>Machine Learning Engineer</h3>
+                        <span>Dec 2022 - Feb 2024</span>
+                    </div>
+                    <div class="experience-details">
+                        <h4>Charité – University Medicine - Berlin, Germany</h4>
+                        <ul>
+                            <li>Engineered a ML model for instance segmentation, implemented L2SP, elastic losses, multiple augmentations, and dataloaders for diverse data sources, set up Git hooks, and utilized Weights & Biases (wandb) for run logging.</li>
+                            <li>Conceptualized and devised a visualization tool for datasets with >1M rows of single-cell data, resulting in improved data comprehension and interpretation.</li>
+                            <li>Automated code quality checks, enforced coding standards, enhancing codebase stability and maintainability for a visualization software.</li>
+                            <li>Combined this with MSc Thesis work at Helmholtz AI, focusing on optimizing embeddings and clustering accuracy in data analytics and machine learning.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <h3>Biomedical AI Researcher – Master Thesis</h3>
+                        <span>Feb 2023 - Aug 2023</span>
+                    </div>
+                    <div class="experience-details">
+                        <h4>Helmholtz AI - Munich, Germany</h4>
+                        <ul>
+                            <li>Accomplished effective clustering of high-dimensional data, as measured by a 26.31% increase in cluster purity, by implementing Neighborhood Component Analysis (NCA) on traditional data patterns.</li>
+                            <li>Achieved feature extraction and embedding optimization from single-cell images, improving cluster purity by 10% over standard image data methods, by training deep neural network scDINO (Single Cell Distillation of knowledge with No labels) on diverse datasets.</li>
+                            <li>Developed a comprehensive analysis pipeline for high-dimensional image data, enabling cluster visualization across 3 datasets with over 22k labeled images, by integrating techniques such as dimensionality reduction (PCA, UMAP), data preprocessing (scaling, normalization), and unsupervised clustering methods.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <h3>Data Science Developer</h3>
+                        <span>Nov 2021 – Jul 2022</span>
+                    </div>
+                    <div class="experience-details">
+                        <h4>Helmholtz AI - Munich, Germany</h4>
+                        <ul>
+                            <li>Created 3 functions in Python for open-source project to ETL, process >250k rows of data, used by over 1000 biologists and biotechnology companies.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <h3>Informatics and Biotech Researcher</h3>
+                        <span>May 2021 – Jun 2022</span>
+                    </div>
+                    <div class="experience-details">
+                        <h4>Ludwig-Maximilians-University - Munich, Germany</h4>
+                        <ul>
+                            <li>Implemented reconstruction of phased haplotypes using Python and R.</li>
+                            <li>Quantified bacteria using RNA and further data analysis using Python.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <h3>Marketing Analyst</h3>
+                        <span>Mar 2019 – Feb 2020</span>
+                    </div>
+                    <div class="experience-details">
+                        <h4>Impakter Media - Rome, Italy</h4>
+                        <ul>
+                            <li>Researched and evaluated start-ups, investors, and partners to identify potential business opportunities and partnerships resulting in 4 partnerships. Managed and acted as PMO to collaborate both startups and other interns.</li>
+                            <li>Analyzed and improved the GTM strategy leading to a 7.4% increase in market reach (Performance marketing).</li>
+                            <li>Optimized and maintained the company databases and customer relationship management systems, data acquisition and analysis for marketing, advertising, and promotion activities. Reported the findings to the Founder.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <h3>Finance and Technical Analyst</h3>
+                        <span>Jun 2017 - May 2018</span>
+                    </div>
+                    <div class="experience-details">
+                        <h4>Krishi Vigyan Kendra, Govt. of India - Amravati, India</h4>
+                        <ul>
+                            <li>Managed the finances of small and medium scale agribusinesses by optimizing resource utilization to increase profitability (achieved 8.2% increase in yield over the previous year) through effective risk management and performance evaluation.</li>
+                            <li>Enhanced operational efficiency by 15%, as measured by reduced time and costs in agricultural processes, by designing and executing field experiments aligned with local agricultural practices and monitoring performance metrics.</li>
+                            <li>Improved forecast accuracy by 20%, as measured by the variance between projected and actual financial outcomes, by developing financial models that integrated economic indicators and financial statements analysis to support investment decisions.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Education</h2>
+            <div class="education-container">
+                <div class="education-item">
+                    <div class="education-header">
+                        <h3>M.Sc Plant Sciences</h3>
+                        <span>2024</span>
+                    </div>
+                    <div class="education-details">
+                        <h4>Ludwig-Maximilians-University - Munich, Germany</h4>
+                        <ul>
+                            <li>Graduated with a grade of 1.6/5 (First Class).</li>
+                            <li>Master thesis in deep learning, research in computational biology and bioinformatics.</li>
+                            <li>Top 20%iler in the class of 153.</li>
+                            <li>Awarded LMU SIST study completion scholarship from DAAD, for academic excellence.</li>
+                            <li>Orchestrated and hosted the 2022 Welcome Event, skillfully managing logistics and activities to engage and orient incoming students.</li>
+                            <li>Tutored the courses "Machine Learning in Image Analysis", "Introduction to single cell RNA sequence data analysis with ScanPy".</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="education-item">
+                    <div class="education-header">
+                        <h3>M.Sc Business Management</h3>
+                        <span>2020</span>
+                    </div>
+                    <div class="education-details">
+                        <h4>Rome Business School - Rome, Italy</h4>
+                        <ul>
+                            <li>Graduated with a grade of 27/30 (Distinction).</li>
+                            <li><a href="https://basno.com/cvso8nyh" target="_blank">CFAI Foundations certification</a>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="education-item">
+                    <div class="education-header">
+                        <h3>B.Sc Agriculture</h3>
+                        <span>2018</span>
+                    </div>
+                    <div class="education-details">
+                        <h4>Dr PDKV - Amravati, India</h4>
+                        <ul>
+                            <li>Graduated with a grade of 8.45/10 (First Class).</li>
+                            <li>Captained the Badminton team, runner-ups in inter-university.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Languages</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>English</h3>
+                    <p>Native Speaker</p>
+                </div>
+                <div class="skill-card">
+                    <h3>German</h3>
+                    <p>B1 (Enrolled in Classes)</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Italian</h3>
+                    <p>B2</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Hindi & Telugu</h3>
+                    <p>Native Speaker</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Interests</h2>
+            <div class="skill-card">
+                <p>Stoicism, Working out, Reading, Badminton, Creative writing (1.6 M views on Quora).</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Theme toggling
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.querySelector('.theme-toggle i');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                icon.className = 'fas fa-moon';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.className = 'fas fa-sun';
+            }
+        }
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add hover effect to skill cards
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('mouseover', () => {
+                card.style.transform = 'translateY(-5px)';
+                card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+            });
+            
+            card.addEventListener('mouseout', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = 'none';
+            });
+        });
+
+        // Dropdown functionality for experiences and education
+        document.querySelectorAll('.experience-item, .education-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Prevent toggling when clicking on a link
+                if (e.target.closest('a')) {
+                    return;
+                }
+
+                // Toggle the 'active' class
+                item.classList.toggle('active');
+
+                // Highlight the outer container if any inner item is active
+                const outerContainer = item.parentElement;
+                if (item.classList.contains('active')) {
+                    outerContainer.classList.add('active');
+                } else {
+                    // Check if any other inner items are active
+                    const anyActive = Array.from(outerContainer.children).some(child => child.classList.contains('active'));
+                    if (!anyActive) {
+                        outerContainer.classList.remove('active');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
