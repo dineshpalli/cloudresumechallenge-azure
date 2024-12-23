@@ -19,6 +19,11 @@ jobs:
       with:
           creds: ${{ secrets.CRC_AZURE_CREDS }}
 
+    - name: Debug directory
+      run: |
+        pwd
+        ls -la
+
     - name: Upload to Blob Storage
       uses: azure/CLI@v1
       with:
@@ -28,9 +33,9 @@ jobs:
               --account-name cloudresumechallengedp \
               --auth-mode key \
               --destination "$web" \
-              --source ./frontend
+              --source .
 
-    - name: Purge CDN Endpoint (Optional)
+    - name: Purge CDN Endpoint
       uses: azure/CLI@v1
       with:
         inlineScript: |
