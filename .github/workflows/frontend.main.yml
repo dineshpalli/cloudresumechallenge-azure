@@ -32,7 +32,7 @@ jobs:
             az storage blob upload-batch \
               --account-name cloudresumechallengedp \
               --auth-mode key \
-              --destination "$web" \
+              --destination '$web' \
               --source .
 
     - name: Purge CDN Endpoint
