@@ -5,7 +5,7 @@ on:
     push:
         # Trigger this workflow whenever changes are pushed to the 'main' branch
         branches: [ main ]
-        # Run the workflow only if changes are made within the 'frontend' folder
+        # Run the workflow only if changes are made within the 'backend' folder
         paths:
             - 'backend/**' 
 
