@@ -1,5 +1,5 @@
-name: deploy_frontend
-# GitHub Actions workflow to deploy the frontend of the Cloud Resume Challenge to Azure Blob Storage
+name: deploy_backend
+# GitHub Actions workflow to deploy the backend of the Cloud Resume Challenge to Azure Blob Storage
 
 on:
     push:
