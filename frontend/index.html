@@ -760,19 +760,19 @@
         // Dropdown functionality for individual experiences and education items
         document.querySelectorAll('.experience-item, .education-item').forEach(item => {
             item.addEventListener('click', (e) => {
-                // Prevent toggling when clicking on a link
+                // Prevents toggling when clicking on a link
                 if (e.target.closest('a')) {
                     return;
                 }
-                // Toggle the 'active' class
+                // Toggles the 'active' class
                 item.classList.toggle('active');
 
-                // Highlight the outer container if any inner item is active
+                // Highlights the outer container if any inner item is active
                 const outerContainer = item.closest('.experience-container, .education-container');
                 if (item.classList.contains('active')) {
                     outerContainer.classList.add('active');
                 } else {
-                    // Check if any other inner items are active
+                    // Checks if any other inner items are active
                     const anyActive = Array.from(outerContainer.children).some(child => child.classList.contains('active'));
                     if (!anyActive) {
                         outerContainer.classList.remove('active');
@@ -780,7 +780,7 @@
                 }
             });
 
-            // Highlight outer container on hover
+            // Highlights outer container on hover
             const outerContainer = item.closest('.experience-container, .education-container');
             item.addEventListener('mouseenter', () => {
                 outerContainer.classList.add('hovered');
@@ -796,21 +796,21 @@
                 const section = title.parentElement;
                 const sectionName = title.textContent.trim();
 
-                // Only apply this logic to Work Experience and Education sections
+                // Applies this logic to Work Experience and Education sections
                 if (sectionName === 'Work Experience' || sectionName === 'Education') {
                     const container = section.querySelector('.experience-container, .education-container');
                     if (!container) return;
 
-                    // Determine if the section is already active (i.e., if any item is active)
+                    // Determines if the section is already active (i.e., if any item is active)
                     const items = container.querySelectorAll('.experience-item, .education-item');
                     const anyActive = Array.from(items).some(item => item.classList.contains('active'));
 
                     if (anyActive) {
-                        // Collapse all items
+                        // Collapses all items
                         items.forEach(item => item.classList.remove('active'));
                         container.classList.remove('active');
                     } else {
-                        // Expand all items
+                        // Expands all items
                         items.forEach(item => item.classList.add('active'));
                         container.classList.add('active');
                     }
