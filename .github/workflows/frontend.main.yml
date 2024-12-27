@@ -33,7 +33,7 @@ jobs:
               --account-name cloudresumechallengedp \
               --auth-mode key \
               --destination '$web' \
-              --source .
+              --source "./frontend" \
 
     - name: Purge CDN Endpoint
       uses: azure/CLI@v1
