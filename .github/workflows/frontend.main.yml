@@ -24,6 +24,14 @@ jobs:
         pwd
         ls -la
 
+    - name: Delete Existing Blobs in $web
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az storage blob delete-batch \
+            --account-name cloudresumechallengedp \
+            --source '$web'
+
     - name: Upload to Blob Storage
       uses: azure/CLI@v1
       with:
