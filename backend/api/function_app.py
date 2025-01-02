@@ -42,7 +42,7 @@ container = database.get_container_client(COSMOS_DB_CONTAINER)
 @app.route(route="http_trigger_py")
 def get_visitor_count(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Processing getVisitorCount request. Kindly wait...")
-    
+
     try:
         # Try to fetch the existing count document with id="1"
         item = None
@@ -57,7 +57,7 @@ def get_visitor_count(req: func.HttpRequest) -> func.HttpResponse:
 
         # Get current count, defaulting to 42 if not found
         current_count = item.get("count", 42)
-        
+
         # Ensure count is a valid integer
         # If corrupted, reset to 42 as fallback
         if not isinstance(current_count, int):
