@@ -87,4 +87,3 @@ def get_visitor_count(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(
             body=json.dumps(error_body), status_code=500, mimetype="application/json"
         )
-    
