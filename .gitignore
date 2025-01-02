@@ -1,2 +1,4 @@
 
 backend/api/local.settings.json
+backend/api/.vnv
+.vscode
