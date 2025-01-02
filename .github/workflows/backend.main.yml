@@ -1,4 +1,4 @@
-name: Deploy Python Function App
+name: deploy_backend_function_app
 on:
   push:
     branches: [ "main" ]
