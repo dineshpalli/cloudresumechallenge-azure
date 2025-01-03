@@ -42,12 +42,16 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: |
-        terraform plan -detailed-exitcode -out=tfplan
+        terraform plan \
+          -detailed-exitcode \
+          -var="subscription_id=${{ env.ARM_SUBSCRIPTION_ID }}" \
+          -out=tfplan
         echo "PLAN_EXIT_CODE=$?" >> $GITHUB_ENV
       continue-on-error: true
+    
 
     - name: Terraform Apply
-      if: env.PLAN_EXIT_CODE == '2'  # Only apply if there are changes
+      if: ${{ env.PLAN_EXIT_CODE == '2' }}
       run: terraform apply tfplan
 
   deploy-function:
