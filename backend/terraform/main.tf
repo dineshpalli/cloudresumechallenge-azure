@@ -11,9 +11,13 @@ terraform {
   }
 }
 
+variable "subscription_id" {
+  type = string
+}
+
 provider "azurerm" {
   features {}
-  subscription_id = "b7e0a645-571c-479d-8b11-c96124f8c45d"
+  subscription_id = var.subscription_id
 }
 
 # Resource Group configuration
