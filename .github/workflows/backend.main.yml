@@ -1,21 +1,61 @@
-name: deploy_backend_function_app
+name: 'Deploy Infrastructure and Function App'
+
 on:
   push:
     branches: [ "main" ]
     paths:
       - 'backend/**'
-  workflow_dispatch:  # Allows manual triggering
+      - '**.tf'
+  workflow_dispatch:
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'GetResumeVisitorCounter'
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'backend/api'
   PYTHON_VERSION: '3.11'
+  ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.CRC_AZURE_CREDS).subscriptionId }}
+  ARM_CLIENT_ID: ${{ fromJson(secrets.CRC_AZURE_CREDS).clientId }}
+  ARM_CLIENT_SECRET: ${{ fromJson(secrets.CRC_AZURE_CREDS).clientSecret }}
+  ARM_TENANT_ID: ${{ fromJson(secrets.CRC_AZURE_CREDS).tenantId }}
 
 jobs:
-  build-and-deploy:
+  infrastructure-check:
+    name: 'Check Infrastructure'
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.CRC_AZURE_CREDS }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: '1.10.3'
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Plan
+      id: plan
+      run: |
+        terraform plan -detailed-exitcode -out=tfplan
+        echo "PLAN_EXIT_CODE=$?" >> $GITHUB_ENV
+      continue-on-error: true
+
+    - name: Terraform Apply
+      if: env.PLAN_EXIT_CODE == '2'  # Only apply if there are changes
+      run: terraform apply tfplan
+
+  deploy-function:
+    name: 'Deploy Function App'
+    needs: infrastructure-check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
       uses: actions/checkout@v3
 
     - name: Setup Python
@@ -23,7 +63,7 @@ jobs:
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Install dependencies
+    - name: Install Dependencies
       shell: bash
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
