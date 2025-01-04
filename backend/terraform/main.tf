@@ -1,6 +1,7 @@
 #####################################################
 #   Terraform & AzureRM Provider Configuration
 #####################################################
+
 terraform {
   required_version = ">= 1.10.3"
   required_providers {
@@ -21,12 +22,14 @@ provider "azurerm" {
 }
 
 # Resource Group configuration
+
 resource "azurerm_resource_group" "rg_function" {
   name     = "getresumevisitorcounter"
   location = "germanywestcentral"
 }
 
 # Storage Account resource configuration
+
 resource "azurerm_storage_account" "function_storage" {
   name                     = "getresumevisitorcounter"
   resource_group_name      = azurerm_resource_group.rg_function.name
@@ -36,6 +39,7 @@ resource "azurerm_storage_account" "function_storage" {
 }
 
 # App Service Plan for the Function (Using azurerm_app_service_plan)
+
 resource "azurerm_app_service_plan" "function_plan" {
   name                = "ASP-GetResumeVisitorCounter-5523"
   resource_group_name = azurerm_resource_group.rg_function.name
@@ -50,6 +54,7 @@ resource "azurerm_app_service_plan" "function_plan" {
 }
 
 # Main Function App resource (Python 3.11 on Linux, Consumption Plan)
+
 resource "azurerm_function_app" "function_app" {
   name                       = "GetResumeVisitorCounter"
   resource_group_name        = azurerm_resource_group.rg_function.name
