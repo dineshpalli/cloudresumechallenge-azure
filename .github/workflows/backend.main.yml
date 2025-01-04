@@ -37,11 +37,14 @@ jobs:
 
     - name: Terraform Init
       id: init
-      run: terraform init
+      run: |
+        cd backend/terraform
+        terraform init
 
     - name: Terraform Plan
       id: plan
       run: |
+        cd backend/terraform
         terraform plan \
           -detailed-exitcode \
           -var="subscription_id=${{ env.ARM_SUBSCRIPTION_ID }}" \
