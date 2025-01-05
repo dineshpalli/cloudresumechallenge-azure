@@ -1,5 +1,5 @@
 import azure.functions as func
-import function_app
+from . import function_app
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
