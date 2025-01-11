@@ -5,3 +5,4 @@ def test_env_vars_loaded():
     assert os.getenv("COSMOS_DB_ACCOUNT_KEY"), "No COSMOS_DB_ACCOUNT_KEY found"
     assert os.getenv("COSMOS_DB_NAME"), "No COSMOS_DB_NAME found"
     assert os.getenv("COSMOS_DB_CONTAINER"), "No COSMOS_DB_CONTAINER found"
+    assert os.getenv("API_FUNCTION_KEY"), "No API_FUNCTION_KEY found"
