@@ -4,11 +4,31 @@ import sys
 from unittest.mock import patch, MagicMock
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-from backend.api.function_app import get_visitor_count
 from azure.cosmos import CosmosClient
 import requests
 import json
 from azure.cosmos.exceptions import CosmosHttpResponseError
+
+def load_local_settings():
+    """
+    Load configuration from local.settings.json file
+    This enables tests to run locally without manually setting environment variables
+    """
+    try:
+        settings_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "../api/local.settings.json")
+        )
+        with open(settings_path, "r") as f:
+            config = json.load(f)
+        for key, value in config["Values"].items():
+            os.environ[key] = value
+    except FileNotFoundError:
+        print("Warning: local.settings.json not found. Ensure environment variables are set manually.")
+    except json.JSONDecodeError:
+        print("Warning: local.settings.json is not valid JSON. Check file format.")
+
+# Load settings before defining configuration
+load_local_settings()
 
 # Configuration for Azure Cosmos DB
 # These environment variables should be set in the test environment
@@ -18,6 +38,7 @@ COSMOS_CONFIG = {
     "account_key": os.environ.get("COSMOS_DB_ACCOUNT_KEY"),
     "database_name": os.environ.get("COSMOS_DB_NAME"),
     "container_name": os.environ.get("COSMOS_DB_CONTAINER"),
+    "api_function_key": os.environ.get("API_FUNCTION_KEY"),
     "item_id": "1",
 }
 
@@ -55,7 +76,8 @@ class TestResumeCounter:
         """
         try:
             count_item = container.read_item(
-                item_id=COSMOS_CONFIG["item_id"], partition_key=COSMOS_CONFIG["item_id"]
+                item=COSMOS_CONFIG["item_id"],
+                partition_key=COSMOS_CONFIG["item_id"],
             )
             return count_item.get("count", 0)
         except CosmosHttpResponseError as e:
@@ -68,13 +90,14 @@ class TestResumeCounter:
         Integration test for the resume counter.
         Verifies that the counter increments correctly through the API.
         """
+        # Import the function to test
+        from backend.api.function_app import get_visitor_count
+
         # Get initial count
         initial_count = self.get_count_from_cosmosdb(cosmos_container)
 
         # Make API call to increment counter
-        api_url = (
-            "https://getresumevisitorcounter.azurewebsites.net/api/http_trigger_py"
-        )
+        api_url = f"https://getresumevisitorcounter.azurewebsites.net/api/http_trigger_py?code={COSMOS_CONFIG['api_function_key']}"
         try:
             response = requests.get(api_url)
             response.raise_for_status()
@@ -96,6 +119,9 @@ class TestResumeCounter:
         Unit test for the resume counter using mocked dependencies.
         Tests the counter logic without making actual API calls.
         """
+        # Import the function to test
+        from backend.api.function_app import get_visitor_count
+
         mock_container = MagicMock()
         mock_container.read_item.return_value = {"id": "1", "count": 5}
 
