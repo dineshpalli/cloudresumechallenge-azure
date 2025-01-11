@@ -22,68 +22,110 @@ jobs:
     name: 'Check Infrastructure'
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: 'Login via Azure CLI'
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.CRC_AZURE_CREDS }}
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.CRC_AZURE_CREDS }}
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: '1.10.3'
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.10.3'
 
-    - name: Terraform Init
-      id: init
-      run: |
-        cd backend/terraform
-        terraform init
+      - name: Terraform Init
+        id: init
+        run: |
+          cd backend/terraform
+          terraform init
 
-    - name: Terraform Plan
-      id: plan
-      run: |
-        cd backend/terraform
-        terraform plan \
-          -detailed-exitcode \
-          -var="subscription_id=${{ env.ARM_SUBSCRIPTION_ID }}" \
-          -out=tfplan
-        echo "PLAN_EXIT_CODE=$?" >> $GITHUB_ENV
-      continue-on-error: true
-    
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd backend/terraform
+          terraform plan \
+            -detailed-exitcode \
+            -var="subscription_id=${{ env.ARM_SUBSCRIPTION_ID }}" \
+            -out=tfplan
+          echo "PLAN_EXIT_CODE=$?" >> $GITHUB_ENV
+        continue-on-error: true
 
-    - name: Terraform Apply
-      if: ${{ env.PLAN_EXIT_CODE == '2' }}
-      run: terraform apply tfplan
+      - name: Terraform Apply
+        if: ${{ env.PLAN_EXIT_CODE == '2' }}
+        run: |
+          cd backend/terraform
+          terraform apply tfplan
 
-  deploy-function:
-    name: 'Deploy Function App'
+  tests:
+    name: 'Run Tests'
     needs: infrastructure-check
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Install Dependencies
-      shell: bash
-      run: |
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
-        popd
+      # 1) Pull the entire JSON from 'ENV_VARS' GitHub secret
+      # 2) Convert from JSON to environment variables by echoing each key-value pair
+      - name: Set up environment variables for testing
+        run: |
+          echo "AzureWebJobsStorage=${{ fromJson(secrets.ENV_VARS).AzureWebJobsStorage }}" >> $GITHUB_ENV
+          echo "FUNCTIONS_WORKER_RUNTIME=${{ fromJson(secrets.ENV_VARS).FUNCTIONS_WORKER_RUNTIME }}" >> $GITHUB_ENV
+          echo "COSMOS_DB_ACCOUNT_URI=${{ fromJson(secrets.ENV_VARS).COSMOS_DB_ACCOUNT_URI }}" >> $GITHUB_ENV
+          echo "COSMOS_DB_ACCOUNT_KEY=${{ fromJson(secrets.ENV_VARS).COSMOS_DB_ACCOUNT_KEY }}" >> $GITHUB_ENV
+          echo "COSMOS_DB_NAME=${{ fromJson(secrets.ENV_VARS).COSMOS_DB_NAME }}" >> $GITHUB_ENV
+          echo "COSMOS_DB_CONTAINER=${{ fromJson(secrets.ENV_VARS).COSMOS_DB_CONTAINER }}" >> $GITHUB_ENV
+          echo "ENABLE_ORYX_BUILD=${{ fromJson(secrets.ENV_VARS).ENABLE_ORYX_BUILD }}" >> $GITHUB_ENV
+          echo "SCM_DO_BUILD_DURING_DEPLOYMENT=${{ fromJson(secrets.ENV_VARS).SCM_DO_BUILD_DURING_DEPLOYMENT }}" >> $GITHUB_ENV
+          echo "AzureWebJobsFeatureFlags=${{ fromJson(secrets.ENV_VARS).AzureWebJobsFeatureFlags }}" >> $GITHUB_ENV
+          echo "LocalHttpPort=${{ fromJson(secrets.ENV_VARS).LocalHttpPort }}" >> $GITHUB_ENV
+          echo "CORS=${{ fromJson(secrets.ENV_VARS).CORS }}" >> $GITHUB_ENV
+          echo "CORSCredentials=${{ fromJson(secrets.ENV_VARS).CORSCredentials }}" >> $GITHUB_ENV
 
-    - name: 'Deploy to Azure Functions'
-      uses: Azure/functions-action@v1
-      id: fa
-      with:
-        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-        scm-do-build-during-deployment: true
-        enable-oryx-build: true
+      - name: Install Test Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r backend/api/requirements.txt
+          pip install pytest
+
+      - name: Run Tests
+        run: |
+          cd backend/tests
+          python -m pytest --maxfail=1 --verbose --disable-warnings
+
+  deploy-function:
+    name: 'Deploy Function App'
+    needs: [infrastructure-check, tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+          popd
+
+      - name: 'Deploy to Azure Functions'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: true
+          enable-oryx-build: true
