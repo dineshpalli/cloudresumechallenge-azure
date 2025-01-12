@@ -1,14 +1,4 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-    const functionApiUrl = "https://getresumevisitorcounter.azurewebsites.net/api/http_trigger_py?code=tKgqHQitkjQJ9IGwsg76eTshQqndhnjXMjXGepJ1ThiBAzFumKYAng%3D%3D"; // THe actual function endpoint
-    const localFunctionApi = "http://localhost:7071/api/http_trigger_py"; // For local testing
-
-    // Use the production URL when deployed, fallback to local during development
-    const apiUrl = window.location.hostname === "localhost" ? localFunctionApi : functionApiUrl;
-
-    getVisitCount(apiUrl);
-});
-
-async function getVisitCount(apiUrl) {
+export async function getVisitCount(apiUrl) {
     let count = 42;  // Default fallback count
 
     try {
@@ -37,7 +27,7 @@ async function getVisitCount(apiUrl) {
 }
 
 // Helper function to update the DOM counter
-function updateCounter(message) {
+export function updateCounter(message) {
     const counterElement = document.getElementById("counter");
     if (counterElement) {
         counterElement.textContent = message;
@@ -45,3 +35,13 @@ function updateCounter(message) {
         console.warn("No element with id 'counter' was found in the DOM.");
     }
 }
+
+document.addEventListener("DOMContentLoaded", (event) => {
+    const functionApiUrl = "https://getresumevisitorcounter.azurewebsites.net/api/http_trigger_py?code=tKgqHQitkjQJ9IGwsg76eTshQqndhnjXMjXGepJ1ThiBAzFumKYAng%3D%3D"; // THe actual function endpoint
+    const localFunctionApi = "http://localhost:7071/api/http_trigger_py"; // For local testing
+
+    // Use the production URL when deployed, fallback to local during development
+    const apiUrl = window.location.hostname === "localhost" ? localFunctionApi : functionApiUrl;
+
+    getVisitCount(apiUrl);
+});
