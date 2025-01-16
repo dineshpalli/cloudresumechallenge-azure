@@ -1,4 +1,4 @@
-async function getVisitCount(apiUrl) {
+export async function getVisitCount(apiUrl) {
     let count = 42;  // Default fallback count
 
     try {
@@ -26,8 +26,7 @@ async function getVisitCount(apiUrl) {
     }
 }
 
-// Helper function to update the DOM counter
-function updateCounter(message) {
+export function updateCounter(message) {
     const counterElement = document.getElementById("counter");
     if (counterElement) {
         counterElement.textContent = message;
@@ -36,14 +35,14 @@ function updateCounter(message) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", (event) => {
-    const functionApiUrl = "https://getresumevisitorcounter.azurewebsites.net/api/http_trigger_py?code=tKgqHQitkjQJ9IGwsg76eTshQqndhnjXMjXGepJ1ThiBAzFumKYAng%3D%3D"; // The actual function endpoint
-    // const localFunctionApi = "http://localhost:7071/api/http_trigger_py"; // For local testing
-
-    // // Use the production URL when deployed, fallback to local during development
-    // const apiUrl = window.location.hostname === "localhost" ? localFunctionApi : functionApiUrl;
-
-    const apiUrl = functionApiUrl;
-
-    getVisitCount(apiUrl);
-});
+// Run DOM-dependent code only if document exists (i.e., in browser)
+if (typeof document !== 'undefined') {
+    document.addEventListener("DOMContentLoaded", (event) => {
+        const functionApiUrl = "https://getresumevisitorcounter.azurewebsites.net/api/http_trigger_py?code=tKgqHQitkjQJ9IGwsg76eTshQqndhnjXMjXGepJ1ThiBAzFumKYAng%3D%3D";
+        
+        // Always use the production API URL
+        const apiUrl = functionApiUrl;
+    
+        getVisitCount(apiUrl);
+    });
+}
