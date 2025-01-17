@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dinesh Palli's CV</title>
+    <title>CV - English & German Toggle</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/images/favicon/site.webmanifest">
+    <!-- Font Awesome (icons) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
     <style>
         :root {
             --primary: #2563eb;
@@ -48,6 +51,105 @@
             line-height: 1.6;
         }
 
+        /* The visitor counter on top-left */
+        .visitor-counter {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        .visitor-counter:hover {
+            transform: scale(1.05);
+        }
+
+        /* Top-right controls (language & theme) */
+        .top-right-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        .language-toggle {
+            background: var(--card-bg);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            color: var(--text);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            color: var(--text);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .language-toggle:hover,
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        .language-toggle i {
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        /* For language toggle internal flex arrangement */
+        .language-toggle .icon,
+        .language-toggle .text {
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        /* By default (English), icon is on the left, text on the right */
+        .language-toggle.en .icon {
+            order: 0;
+            margin-right: 0.5rem;
+        }
+
+        .language-toggle.en .text {
+            order: 1;
+        }
+
+        /* In German, swap them: icon on right, text on the left */
+        .language-toggle.de .icon {
+            order: 1;
+            margin-left: 0.5rem;
+        }
+
+        .language-toggle.de .text {
+            order: 0;
+        }
+
+        /* Container & layout */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -76,9 +178,19 @@
         }
 
         @keyframes profilePop {
-            0% { transform: scale(0); opacity: 0; }
-            60% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .profile-ring {
@@ -93,8 +205,13 @@
         }
 
         @keyframes ringRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         h1 {
@@ -107,8 +224,15 @@
         }
 
         @keyframes titleSlide {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .contact-info {
@@ -163,8 +287,8 @@
             margin-bottom: 1.5rem;
             position: relative;
             display: inline-block;
-            cursor: pointer; 
-            color: var(--text); 
+            cursor: pointer;
+            color: var(--text);
             transition: color 0.3s;
         }
 
@@ -179,36 +303,20 @@
             transition: background 0.3s;
         }
 
-        /* Hover effect on section-title for highlighting inner boxes' borders in Work Exp and Education */
-        .section-title:hover + .section-details .experience-item::before,
-        .section-title:hover + .section-details .education-item::before {
-            transform: scaleY(1);
-            background: var(--inner-border);
-        }
-
-        /* Hover effect on section-title for Profile, Skills, Languages, Interests to highlight all skill-cards */
-        .section-title:hover + .section-details .skill-card::before {
-            transform: scaleY(1);
-            background: var(--inner-border);
-        }
-
         .section-title:hover {
-            color: var(--inner-border); 
+            color: var(--inner-border);
         }
 
-        /* Highlight outer container when hovered over any inner box */
-        .experience-container.hovered::before,
-        .education-container.hovered::before {
+        /* Hover effects for expansions */
+        .section-title:hover+.section-details .experience-item::before,
+        .section-title:hover+.section-details .education-item::before {
             transform: scaleY(1);
-            background: var(--primary);
+            background: var(--inner-border);
         }
 
-        .experience-container.active::before,
-        .education-container.active::before,
-        .experience-container.hovered::before,
-        .education-container.hovered::before {
+        .section-title:hover+.section-details .skill-card::before {
             transform: scaleY(1);
-            background: var(--primary);
+            background: var(--inner-border);
         }
 
         .skills-grid {
@@ -217,7 +325,6 @@
             gap: 1.5rem;
         }
 
-        /* Skill cards same color as outer work experience box (var(--card-bg)) */
         .skill-card {
             background-color: var(--card-bg);
             padding: 1.5rem;
@@ -248,10 +355,9 @@
 
         .skill-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        /* Outer Containers for Work Experience and Education */
         .experience-container,
         .education-container {
             background-color: var(--card-bg);
@@ -348,42 +454,18 @@
             max-height: 1000px;
         }
 
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            border: none;
-            padding: 0.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 1000;
-            transition: transform 0.2s;
+        ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
         }
 
-        .theme-toggle:hover {
-            transform: scale(1.1);
+        a {
+            color: var(--primary);
+            text-decoration: none;
         }
 
-        .theme-toggle i {
-            font-size: 1.2rem;
-            color: var(--text);
-        }
-
-        .visitor-counter {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: var(--card-bg);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 1000;
-            transition: transform 0.2s;
-        }
-
-        .visitor-counter:hover {
-            transform: scale(1.05);
+        a:hover {
+            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
@@ -401,349 +483,725 @@
             }
         }
 
-        ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
+        canvas {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 1500;
+            pointer-events: none;
         }
-
-        a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
     </style>
 </head>
+
 <body data-theme="dark">
+    <!-- VISITOR COUNTER (left side) -->
     <div class="visitor-counter" id="counter">Visits</div>
 
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-sun"></i>
-    </button>
+    <!-- LANGUAGE & THEME TOGGLE (right side) -->
+    <div class="top-right-controls">
+        <!-- Language Toggle Button (default = 'en' state) -->
+        <button class="language-toggle en">
+            <span class="icon"><i class="fas fa-globe"></i></span>
+            <span class="text" id="lang-button-text">EN</span>
+        </button>
 
-    <div class="container">
-        <header>
-            <div class="profile-container">
-                <div class="profile-ring"></div>
-                <img src="images/DP_2023_crop.jpg" alt="Dinesh Palli" class="profile-img">
-            </div>
-            <h1>Dinesh Palli</h1>
-            <div class="contact-info">
-                <div class="contact-info-row">
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        +49-(0)15166226565
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <a href="mailto:himself@dineshpalli.com">himself@dineshpalli.com</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <!-- Hamburg Address -->
-                        <a 
-                          href="https://maps.app.goo.gl/9DD41zR4oHbYPum57" 
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          >
-                          Heidberg 54, Hamburg, 22301, Germany
-                        </a>
-                        <!--
-                        <br>
-                        <a 
-                          href="https://maps.app.goo.gl/ftsyfYXM5Va5HsL96" 
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          >
-                          Engadiner Straße 28, Munich, 81475, Germany
-                        </a>
-                        -->
-                    </div>                    
-                </div>
-                <div class="contact-info-row">
-                    <div class="contact-item">
-                        <i class="fab fa-linkedin"></i>
-                        <a href="https://www.linkedin.com/in/dineshpalli/" target="_blank">LinkedIn</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fab fa-xing"></i>
-                        <a href="https://www.xing.com/profile/Dinesh_Palli/" target="_blank">Xing</a>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Profile Section -->
-        <section class="section">
-            <h2 class="section-title">Profile</h2>
-            <div class="section-details">
-                <div class="skill-card">
-                    <ul>
-                        <li>4+ years in data science, analysis and visualization: machine learning, BI, KPI dashboard reporting, digitization and automation, Python, SQL, R; developed and documented open-source data analysis tools with >300 stars on <a href="https://github.com/dineshpalli" target="_blank">GitHub</a></li>
-                        <li>Proven track record in business environments securing 4 partnerships and contributing to a 7.4% increase in market reach</li>
-                        <li>Experienced in Biomedical AI, computational biology, developing visualization tools for datasets with >250k rows</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section class="section">
-            <h2 class="section-title">Skills</h2>
-            <div class="section-details">
-                <div class="skills-grid">
-                    <div class="skill-card">
-                        <h3>Programming Languages</h3>
-                        <p>Python, Advanced SQL, R</p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Version Control and Others</h3>
-                        <p>Git, <a href="https://github.com/dineshpalli" target="_blank">GitHub</a>, GitLab (CI/CD), Bit Bucket, Docker, <a href="https://leetcode.com/u/DineshPalli/" target="_blank">LeetCode</a></p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Libraries & Frameworks</h3>
-                        <p>PyTorch, Scikit-Learn, NumPy, Pandas, BASH</p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Machine Learning Techniques</h3>
-                        <p>Regression analysis, Clustering, Classification, K-NN, Deep Learning</p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Models</h3>
-                        <p>Vision Transformers, Student-Teacher Models, K-Means Clustering, PCA, Autoencoders</p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Data Visualization Tools</h3>
-                        <p>Matplotlib, Seaborn, <a href="https://public.tableau.com/app/profile/dineshpalli" target="_blank">Tableau</a>, Google Analytics</p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Statistics</h3>
-                        <p>A/B testing, Ad-hoc analyses, Time series Analysis, Attribution Modelling</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Work Experience Section -->
-        <section class="section">
-            <h2 class="section-title">Work Experience</h2>
-            <div class="section-details">
-                <div class="experience-container">
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <h3>Business Analyst</h3>
-                            <span>Feb 2024 – Present</span>
-                        </div>
-                        <div class="experience-details">
-                            <h4>Olympus Europa EMEA - Hamburg, Germany</h4>
-                            <ul>
-                                <li>Reduced processing time by 37.48% by digitizing operational processes using Microsoft Power Apps</li>
-                                <li>Engineered an end-to-end data pipeline in Python including ETL processes, automated regulatory reporting, database management, and internal ERP systems</li>
-                                <li>Automated KPI dashboards with Power BI, data modeling, and statistical analysis</li>
-                                <li>Collaborated in the healthcare aggregate spend disclosure process, ensuring compliance with EMEA regulations and GDPR legislation</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <h3>Machine Learning Engineer</h3>
-                            <span>Dec 2022 - Feb 2024</span>
-                        </div>
-                        <div class="experience-details">
-                            <h4>Charité – University Medicine - Berlin, Germany</h4>
-                            <ul>
-                                <li>Engineered a ML model for instance segmentation, implemented L2SP, elastic losses, multiple augmentations, and dataloaders for diverse data sources, set up Git hooks, and utilized Weights & Biases (wandb) for run logging</li>
-                                <li>Conceptualized and devised a visualization tool for datasets with >1M rows of single-cell data, resulting in improved data comprehension and interpretation</li>
-                                <li>Automated code quality checks, enforced coding standards, enhancing codebase stability and maintainability for a visualization software</li>
-                                <li>Combined this with MSc Thesis work at Helmholtz AI, focusing on optimizing embeddings and clustering accuracy in data analytics and machine learning</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <h3>Biomedical AI Researcher – Master Thesis</h3>
-                            <span>Feb 2023 - Aug 2023</span>
-                        </div>
-                        <div class="experience-details">
-                            <h4>Helmholtz AI - Munich, Germany</h4>
-                            <ul>
-                                <li>Accomplished effective clustering of high-dimensional data, as measured by a 26.31% increase in cluster purity, by implementing Neighborhood Component Analysis (NCA) on traditional data patterns</li>
-                                <li>Achieved feature extraction and embedding optimization from single-cell images, improving cluster purity by 10% over standard image data methods, by training deep neural network scDINO (Single Cell Distillation of knowledge with No labels) on diverse datasets</li>
-                                <li>Developed a comprehensive analysis pipeline for high-dimensional image data, enabling cluster visualization across 3 datasets with over 22k labeled images, by integrating techniques such as dimensionality reduction (PCA, UMAP), data preprocessing (scaling, normalization), and unsupervised clustering methods</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <h3>Data Science Developer</h3>
-                            <span>Nov 2021 – Jul 2022</span>
-                        </div>
-                        <div class="experience-details">
-                            <h4>Helmholtz AI - Munich, Germany</h4>
-                            <ul>
-                                <li>Created 3 functions in Python for open-source project to ETL, process >250k rows of data, used by over 1000 biologists and biotechnology companies</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <h3>Informatics and Biotech Researcher</h3>
-                            <span>May 2021 – Jun 2022</span>
-                        </div>
-                        <div class="experience-details">
-                            <h4>Ludwig-Maximilians-University - Munich, Germany</h4>
-                            <ul>
-                                <li>Implemented reconstruction of phased haplotypes using Python and R</li>
-                                <li>Quantified bacteria using RNA and further data analysis using Python</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <h3>Marketing Analyst</h3>
-                            <span>Mar 2019 – Feb 2020</span>
-                        </div>
-                        <div class="experience-details">
-                            <h4>Impakter Media - Rome, Italy</h4>
-                            <ul>
-                                <li>Researched and evaluated start-ups, investors, and partners to identify potential business opportunities and partnerships resulting in 4 partnerships. Managed and acted as PMO to collaborate both startups and other interns</li>
-                                <li>Analyzed and improved the GTM strategy leading to a 7.4% increase in market reach (Performance marketing)</li>
-                                <li>Optimized and maintained the company databases and customer relationship management systems, data acquisition and analysis for marketing, advertising, and promotion activities; Reported the findings to the Founder</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <h3>Finance and Technical Analyst</h3>
-                            <span>Jun 2017 - May 2018</span>
-                        </div>
-                        <div class="experience-details">
-                            <h4>Krishi Vigyan Kendra, Govt. of India - Amravati, India</h4>
-                            <ul>
-                                <li>Managed the finances of small and medium scale agribusinesses by optimizing resource utilization to increase profitability (achieved 8.2% increase in yield over the previous year) through effective risk management and performance evaluation</li>
-                                <li>Enhanced operational efficiency by 15%, as measured by reduced time and costs in agricultural processes, by designing and executing field experiments aligned with local agricultural practices and monitoring performance metrics</li>
-                                <li>Improved forecast accuracy by 20%, as measured by the variance between projected and actual financial outcomes, by developing financial models that integrated economic indicators and financial statements analysis to support investment decisions</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Education Section -->
-        <section class="section">
-            <h2 class="section-title">Education</h2>
-            <div class="section-details">
-                <div class="education-container">
-                    <div class="education-item">
-                        <div class="education-header">
-                            <h3>M.Sc Plant Sciences</h3>
-                            <span>2024</span>
-                        </div>
-                        <div class="education-details">
-                            <h4>Ludwig-Maximilians-University - Munich, Germany</h4>
-                            <ul>
-                                <li>Graduated with a grade of 1.6/5 (First Class)</li>
-                                <li>Master thesis in deep learning, research in computational biology and bioinformatics</li>
-                                <li>Top 20%iler in the class of 153</li>
-                                <li>Awarded LMU SIST study completion scholarship from DAAD, for academic excellence</li>
-                                <li>Orchestrated and hosted the 2022 Welcome Event, skillfully managing logistics and activities to engage and orient incoming students</li>
-                                <li>Tutored the courses "Machine Learning in Image Analysis", "Introduction to single cell RNA sequence data analysis with ScanPy"</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="education-item">
-                        <div class="education-header">
-                            <h3>M.Sc Business Management</h3>
-                            <span>2020</span>
-                        </div>
-                        <div class="education-details">
-                            <h4>Rome Business School - Rome, Italy</h4>
-                            <ul>
-                                <li>Graduated with a grade of 27/30 (Distinction)</li>
-                                <li><a href="https://basno.com/cvso8nyh" target="_blank">CFAI Foundations certification</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="education-item">
-                        <div class="education-header">
-                            <h3>B.Sc Agriculture</h3>
-                            <span>2018</span>
-                        </div>
-                        <div class="education-details">
-                            <h4>Dr PDKV - Amravati, India</h4>
-                            <ul>
-                                <li>Graduated with a grade of 8.45/10 (First Class)</li>
-                                <li>Captained the Badminton team, runner-ups in inter-university</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Languages Section -->
-        <section class="section">
-            <h2 class="section-title">Languages</h2>
-            <div class="section-details">
-                <div class="skills-grid">
-                    <div class="skill-card">
-                        <h3>English</h3>
-                        <p>Native Speaker</p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>German</h3>
-                        <p>B1 (Enrolled in Classes)</p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Italian</h3>
-                        <p>B2</p>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Hindi & Telugu</h3>
-                        <p>Native Speaker</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Interests Section -->
-        <section class="section">
-            <h2 class="section-title">Interests</h2>
-            <div class="section-details">
-                <div class="skill-card">
-                    <p>Stoicism, Working out, Reading, Badminton, Creative writing (1.6 M views on Quora)</p>
-                </div>
-            </div>
-        </section>
+        <!-- Dark/Light Theme Toggle -->
+        <button class="theme-toggle">
+            <i class="fas fa-sun"></i>
+        </button>
     </div>
+
+    <!-- CONTENT: ENGLISH -->
+    <div id="content-en">
+        <div class="container">
+            <header>
+                <div class="profile-container">
+                    <div class="profile-ring"></div>
+                    <img src="images/DP_2023_crop.jpg" alt="Dinesh Palli" class="profile-img">
+                </div>
+                <h1>Dinesh Palli</h1>
+                <div class="contact-info">
+                    <div class="contact-info-row">
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:+4915166226565">+49-(0)15166226565</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:himself@dineshpalli.com">himself@dineshpalli.com</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <a href="https://g.co/kgs/gs6WjUY" target="_blank" rel="noopener noreferrer">
+                                Heidberg, 22301, Hamburg, Germany
+                            </a>
+                        </div>
+                    </div>
+                    <div class="contact-info-row">
+                        <div class="contact-item">
+                            <i class="fab fa-linkedin"></i>
+                            <a href="https://www.linkedin.com/in/dineshpalli/" target="_blank">LinkedIn</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-xing"></i>
+                            <a href="https://www.xing.com/profile/Dinesh_Palli/" target="_blank">Xing</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Profile Section -->
+            <section class="section">
+                <h2 class="section-title">Profile</h2>
+                <div class="section-details">
+                    <div class="skill-card">
+                        <ul>
+                            <li>4+ years in data science, analysis and visualization: machine learning, BI, KPI
+                                dashboard reporting, digitization and automation, Python, SQL, R; developed and
+                                documented open-source data analysis tools with &gt;300 stars on <a
+                                    href="https://github.com/dineshpalli" target="_blank">GitHub</a>.</li>
+                            <li>Proven track record in business environments securing 4 partnerships and contributing to
+                                a 7.4% increase in market reach.</li>
+                            <li>Experienced in Biomedical AI, computational biology, developing visualization tools for
+                                datasets with &gt;250k rows.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section class="section">
+                <h2 class="section-title">Skills</h2>
+                <div class="section-details">
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <h3>Programming Languages</h3>
+                            <p>Python, Advanced SQL, R</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Version Control and Others</h3>
+                            <p>Git, <a href="https://github.com/dineshpalli" target="_blank">GitHub</a>, GitLab (CI/CD),
+                                Bit Bucket, Docker, <a href="https://leetcode.com/u/DineshPalli/"
+                                    target="_blank">LeetCode</a></p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Libraries &amp; Frameworks</h3>
+                            <p>PyTorch, Scikit-Learn, NumPy, Pandas, BASH</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Machine Learning Techniques</h3>
+                            <p>Regression analysis, Clustering, Classification, K-NN, Deep Learning</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Models</h3>
+                            <p>Vision Transformers, Student-Teacher Models, K-Means Clustering, PCA, Autoencoders</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Data Visualization Tools</h3>
+                            <p>Matplotlib, Seaborn, <a href="https://public.tableau.com/app/profile/dineshpalli"
+                                    target="_blank">Tableau</a>, Google Analytics</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Statistics</h3>
+                            <p>A/B testing, Ad-hoc analyses, Time series Analysis, Attribution Modelling</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Work Experience Section -->
+            <section class="section">
+                <h2 class="section-title">Work Experience</h2>
+                <div class="section-details">
+                    <div class="experience-container">
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Business Analyst</h3>
+                                <span>Feb 2024 – Present</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Olympus Europa EMEA - Hamburg, Germany</h4>
+                                <ul>
+                                    <li>Reduced processing time by 37.48% by digitizing operational processes using
+                                        Microsoft Power Apps</li>
+                                    <li>Engineered an end-to-end data pipeline in Python including ETL processes,
+                                        automated regulatory reporting, database management, and internal ERP systems
+                                    </li>
+                                    <li>Automated KPI dashboards with Power BI, data modeling, and statistical analysis
+                                    </li>
+                                    <li>Collaborated in the healthcare aggregate spend disclosure process, ensuring
+                                        compliance with EMEA regulations and GDPR legislation</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Machine Learning Engineer</h3>
+                                <span>Dec 2022 - Feb 2024</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Charité – University Medicine - Berlin, Germany</h4>
+                                <ul>
+                                    <li>Engineered a ML model for instance segmentation, implemented L2SP, elastic
+                                        losses, multiple augmentations, and dataloaders</li>
+                                    <li>Conceptualized a visualization tool for datasets with &gt;1M rows of single-cell
+                                        data</li>
+                                    <li>Automated code quality checks, enforced coding standards, enhanced codebase
+                                        stability</li>
+                                    <li>Combined this with MSc Thesis at Helmholtz AI, focusing on optimizing
+                                        embeddings/clustering accuracy</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Biomedical AI Researcher – Master Thesis</h3>
+                                <span>Feb 2023 - Aug 2023</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Helmholtz AI - Munich, Germany</h4>
+                                <ul>
+                                    <li>Effective clustering of high-dimensional data, achieving a 26.31% increase in
+                                        cluster purity</li>
+                                    <li>Feature extraction and embedding optimization from single-cell images, scDINO
+                                        model boosting cluster purity 10%</li>
+                                    <li>Developed a pipeline for high-dimensional image data (22k+ images), enabling
+                                        cluster visualization</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Data Science Developer</h3>
+                                <span>Nov 2021 – Jul 2022</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Helmholtz AI - Munich, Germany</h4>
+                                <ul>
+                                    <li>Created 3 functions in Python for an open-source project to ETL &gt;250k data
+                                        rows, used by 1000+ biotech clients</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Informatics and Biotech Researcher</h3>
+                                <span>May 2021 – Jun 2022</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Ludwig-Maximilians-University - Munich, Germany</h4>
+                                <ul>
+                                    <li>Implemented reconstruction of phased haplotypes using Python and R</li>
+                                    <li>Quantified bacteria with RNA, subsequent data analysis using Python</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Marketing Analyst</h3>
+                                <span>Mar 2019 – Feb 2020</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Impakter Media - Rome, Italy</h4>
+                                <ul>
+                                    <li>Researched/evaluated start-ups & partners, secured 4 partnerships</li>
+                                    <li>Analyzed and improved GTM strategy for a 7.4% market reach increase</li>
+                                    <li>Optimized company databases and CRM, data acquisition/analysis for promotions
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Finance and Technical Analyst</h3>
+                                <span>Jun 2017 - May 2018</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Krishi Vigyan Kendra, Govt. of India - Amravati, India</h4>
+                                <ul>
+                                    <li>Managed finances for small agribusinesses, achieving 8.2% yield increase</li>
+                                    <li>Enhanced operational efficiency by 15%, designing relevant field experiments
+                                    </li>
+                                    <li>Improved forecast accuracy by 20%, developing financial models with economic
+                                        indicators</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education Section -->
+            <section class="section">
+                <h2 class="section-title">Education</h2>
+                <div class="section-details">
+                    <div class="education-container">
+                        <div class="education-item">
+                            <div class="education-header">
+                                <h3>M.Sc Plant Sciences</h3>
+                                <span>2024</span>
+                            </div>
+                            <div class="education-details">
+                                <h4>Ludwig-Maximilians-University - Munich, Germany</h4>
+                                <ul>
+                                    <li>Graduated with a grade of 1.6/5 (First Class)</li>
+                                    <li>Thesis in deep learning, computational biology/bioinformatics</li>
+                                    <li>Top 20%iler in a class of 153</li>
+                                    <li>LMU SIST scholarship from DAAD for academic excellence</li>
+                                    <li>Hosted 2022 Welcome Event, managed logistics</li>
+                                    <li>Tutored "Machine Learning in Image Analysis", "Intro to single cell RNA seq"
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="education-item">
+                            <div class="education-header">
+                                <h3>M.Sc Business Management</h3>
+                                <span>2020</span>
+                            </div>
+                            <div class="education-details">
+                                <h4>Rome Business School - Rome, Italy</h4>
+                                <ul>
+                                    <li>Graduated with 27/30 (Distinction)</li>
+                                    <li><a href="https://basno.com/cvso8nyh" target="_blank">CFAI Foundations
+                                            certification.</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="education-item">
+                            <div class="education-header">
+                                <h3>B.Sc Agriculture</h3>
+                                <span>2018</span>
+                            </div>
+                            <div class="education-details">
+                                <h4>Dr PDKV - Amravati, India</h4>
+                                <ul>
+                                    <li>Graduated with 8.45/10 (First Class)</li>
+                                    <li>Captained Badminton team, runner-ups in inter-university</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Languages Section -->
+            <section class="section">
+                <h2 class="section-title">Languages</h2>
+                <div class="section-details">
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <h3>English</h3>
+                            <p>Native Speaker</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>German</h3>
+                            <p>B1 (Enrolled in Classes)</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Italian</h3>
+                            <p>B2</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Hindi</h3>
+                            <p>Native Speaker</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Telugu</h3>
+                            <p>Native speaker</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interests Section -->
+            <section class="section">
+                <h2 class="section-title">Interests</h2>
+                <div class="section-details">
+                    <div class="skill-card">
+                        <p>Stoicism, Working out, Reading, Badminton, Creative writing (1.6 M views on Quora)</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- CONTENT: GERMAN (initially hidden) -->
+    <div id="content-de" style="display: none;">
+        <div class="container">
+            <header>
+                <div class="profile-container">
+                    <div class="profile-ring"></div>
+                    <img src="images/DP_2023_crop.jpg" alt="Dinesh Palli" class="profile-img">
+                </div>
+                <h1>Dinesh Palli</h1>
+                <div class="contact-info">
+                    <div class="contact-info-row">
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:+4915166226565">+49-(0)15166226565</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:himself@dineshpalli.com">himself@dineshpalli.com</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <a href="https://g.co/kgs/gs6WjUY" target="_blank" rel="noopener noreferrer">
+                                Heidberg, 22301, Hamburg, Deutschland
+                            </a>
+                        </div>
+                    </div>
+                    <div class="contact-info-row">
+                        <div class="contact-item">
+                            <i class="fab fa-linkedin"></i>
+                            <a href="https://www.linkedin.com/in/dineshpalli/" target="_blank">LinkedIn</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-xing"></i>
+                            <a href="https://www.xing.com/profile/Dinesh_Palli/" target="_blank">Xing</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Über Mich -->
+            <section class="section">
+                <h2 class="section-title">Über Mich</h2>
+                <div class="section-details">
+                    <div class="skill-card">
+                        <ul>
+                            <li>Über 4 Jahre Erfahrung in Data Science, Analyse und Visualisierung: Machine Learning,
+                                BI, KPI-Dashboard-Reporting, Digitalisierung und Automatisierung, Python, SQL, R;
+                                Entwicklung von Open-Source-Datenanalysetools mit über 300 <a
+                                    href="https://github.com/dineshpalli" target="_blank">GitHub</a>-Sternen.</li>
+                            <li>Nachweisliche Erfolge in Geschäftsumgebungen mit Sicherung von 4 Partnerschaften und
+                                Beitrag zu einer 7,4%igen Steigerung der Marktreichweite.</li>
+                            <li>Erfahren in biomedizinischer KI, computergestützter Biologie und Entwicklung von
+                                Visualisierungstools für Datensätze mit über 250.000 Zeilen.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fähigkeiten -->
+            <section class="section">
+                <h2 class="section-title">Fähigkeiten</h2>
+                <div class="section-details">
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <h3>Programmiersprachen</h3>
+                            <p>Python, Advanced SQL, R</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Versionskontrolle und Sonstiges</h3>
+                            <p>Git, <a href="https://github.com/dineshpalli" target="_blank">GitHub</a>, GitLab (CI/CD),
+                                Bit Bucket, Docker, <a href="https://leetcode.com/u/DineshPalli/"
+                                    target="_blank">LeetCode</a></p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Libraries &amp; Frameworks</h3>
+                            <p>PyTorch, Scikit-Learn, NumPy, Pandas, BASH</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Machine Learning Techniken</h3>
+                            <p>Regression analysis, Clustering, Classification, K-NN, Deep Learning</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Modelle</h3>
+                            <p>Vision Transformers, Student-Teacher Models, K-Means Clustering, PCA, Autoencoders</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Datenvisualisierungstools</h3>
+                            <p>Matplotlib, Seaborn, <a href="https://public.tableau.com/app/profile/dineshpalli"
+                                    target="_blank">Tableau</a>, Google Analytics</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Statistik</h3>
+                            <p>A/B testing, Ad-hoc analyses, Time series Analysis, Attribution Modelling</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Berufserfahrung -->
+            <section class="section">
+                <h2 class="section-title">Berufserfahrung</h2>
+                <div class="section-details">
+                    <div class="experience-container">
+                        <!-- Business Analyst -->
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Business Analyst</h3>
+                                <span>Feb 2024 – Feb 2025</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Olympus Europa EMEA – Hamburg, Deutschland</h4>
+                                <ul>
+                                    <li>Reduzierung der Verarbeitungszeit um 37,48% durch Digitalisierung operativer
+                                        Prozesse mit Microsoft Power Apps.</li>
+                                    <li>Entwicklung einer End-to-End-Datenpipeline in Python einschließlich
+                                        ETL-Prozessen, automatisierter regulatorischer Berichterstattung,
+                                        Datenbankmanagement und internen ERP-Systemen.</li>
+                                    <li>Automatisierung von KPI-Dashboards mit Power BI, Datenmodellierung und
+                                        statistischer Analyse.</li>
+                                    <li>Mitarbeit am Offenlegungsprozess für Gesundheitsausgaben, Sicherstellung der
+                                        Einhaltung von EMEA-Vorschriften und DSGVO-Gesetzen.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- ML Engineer -->
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Machine Learning Engineer</h3>
+                                <span>Dez 2022 – Feb 2024</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Charité – Universitätsmedizin – Berlin, Deutschland</h4>
+                                <ul>
+                                    <li>Entwicklung eines ML-Modells für Instanzsegmentierung, Implementierung von L2SP,
+                                        elastischen Verlusten, mehreren Augmentierungen und Dataloaders für diverse
+                                        Datenquellen, Einrichtung von Git Hooks und Nutzung von Weights & Biases (wandb)
+                                        für Laufprotokollierung.</li>
+                                    <li>Konzeption und Entwicklung eines Visualisierungstools für Datensätze mit über 1
+                                        Million Zeilen Einzelzelldaten, was zu verbesserter Datenverständnis und
+                                        -interpretation führte.</li>
+                                    <li>Automatisierung von Code-Qualitätsprüfungen, Durchsetzung von
+                                        Codierungsstandards, Verbesserung der Stabilität und Wartbarkeit des Codebasises
+                                        für eine Visualisierungssoftware.</li>
+                                    <li>Kombination dieser Aufgaben mit der MSc-Thesis bei Helmholtz AI, Fokus auf
+                                        Optimierung von Einbettungen und Clusterungsgenauigkeit in Datenanalyse und
+                                        Machine Learning.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Biomed. KI – Masterarbeit -->
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Forschungsmitarbeiter Biomedizinische KI – Masterarbeit</h3>
+                                <span>Feb 2023 – Aug 2023</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Helmholtz AI – München, Deutschland</h4>
+                                <ul>
+                                    <li>Erfolgreiches Clustering hochdimensionaler Daten, gemessen an einer 26,31%igen
+                                        Steigerung der Clusterreinheit, durch Implementierung von Neighborhood Component
+                                        Analysis (NCA) auf traditionellen Datenmustern.</li>
+                                    <li>Erzielung von Merkmalsextraktion und Einbettungsoptimierung aus
+                                        Einzelzellbildern, Verbesserung der Clusterreinheit um 10% gegenüber
+                                        Standard-Bilddatenmethoden, durch Training des tiefen neuronalen Netzwerks
+                                        scDINO (Single Cell Distillation of Knowledge with No Labels) auf diversen
+                                        Datensätzen.</li>
+                                    <li>Entwicklung einer umfassenden Analysepipeline für hochdimensionale Bilddaten,
+                                        Ermöglichung der Clustervisualisierung über 3 Datensätze mit über 22.000
+                                        gelabelten Bildern, durch Integration von Techniken wie Dimensionsreduktion
+                                        (PCA, UMAP), Datenvorverarbeitung (Skalierung, Normalisierung) und unüberwachte
+                                        Clustering-Methoden.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Data Science Developer -->
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Data Science Developer</h3>
+                                <span>Nov 2021 – Jul 2022</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Helmholtz AI – München, Deutschland</h4>
+                                <ul>
+                                    <li>Erstellung von 3 Funktionen in Python für ein Open-Source-Projekt zur
+                                        ETL-Verarbeitung von über 250.000 Datenzeilen, genutzt von über 1.000 Biologen
+                                        und Biotechnologieunternehmen.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Informatik & Biotech-Forscher -->
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Informatik- und Biotech-Forscher</h3>
+                                <span>Mai 2021 – Jun 2022</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Ludwig-Maximilians-Universität – München, Deutschland</h4>
+                                <ul>
+                                    <li>Implementierung der Rekonstruktion phasierter Haplotypen unter Verwendung von
+                                        Python und R.</li>
+                                    <li>Quantifizierung von Bakterien mittels RNA und anschließender Datenanalyse mit
+                                        Python.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Marketing Analyst -->
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Marketing Analyst</h3>
+                                <span>Mär 2019 – Feb 2020</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Impakter Media – Rom, Italien</h4>
+                                <ul>
+                                    <li>Recherche und Bewertung von Start-ups, Investoren und Partnern zur
+                                        Identifizierung potenzieller Geschäftsmöglichkeiten und Partnerschaften, was zu
+                                        4 Partnerschaften führte. Management und Funktion als PMO zur Zusammenarbeit
+                                        zwischen Start-ups und anderen Praktikanten.</li>
+                                    <li>Analyse und Verbesserung der GTM-Strategie, was zu einer 7,4%igen Steigerung der
+                                        Marktreichweite führte (Performance Marketing).</li>
+                                    <li>Optimierung und Wartung der Unternehmensdatenbanken und Customer Relationship
+                                        Management Systeme, Datenerfassung und -analyse für Marketing-, Werbe- und
+                                        Promotionsaktivitäten. Berichterstattung der Ergebnisse an den Gründer.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Finanz & Technischer Analyst -->
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3>Finanz- und Technischer Analyst</h3>
+                                <span>Jun 2017 – Mai 2018</span>
+                            </div>
+                            <div class="experience-details">
+                                <h4>Krishi Vigyan Kendra – Regierung von Indien, Amravati, Indien</h4>
+                                <ul>
+                                    <li>Verwaltung der Finanzen von klein- und mittelständischen Agrarunternehmen durch
+                                        Optimierung der Ressourcennutzung zur Steigerung der Rentabilität (8,2%ige
+                                        Ertragssteigerung gegenüber dem Vorjahr) durch effektives Risikomanagement und
+                                        Leistungsevaluation.</li>
+                                    <li>Steigerung der operativen Effizienz um 15%, gemessen an reduzierter Zeit und
+                                        Kosten in landwirtschaftlichen Prozessen, durch Design und Durchführung von
+                                        Feldexperimenten im Einklang mit lokalen landwirtschaftlichen Praktiken und
+                                        Überwachung von Leistungskennzahlen.</li>
+                                    <li>Verbesserung der Prognosegenauigkeit um 20%, gemessen an der Abweichung zwischen
+                                        prognostizierten und tatsächlichen Finanzergebnissen, durch Entwicklung von
+                                        Finanzmodellen, die wirtschaftliche Indikatoren und Analysen von Finanzberichten
+                                        integrierten, um Investitionsentscheidungen zu unterstützen.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ausbildung -->
+            <section class="section">
+                <h2 class="section-title">Ausbildung</h2>
+                <div class="section-details">
+                    <div class="education-container">
+                        <div class="education-item">
+                            <div class="education-header">
+                                <h3>M.Sc. Pflanzenwissenschaften</h3>
+                                <span>2024</span>
+                            </div>
+                            <div class="education-details">
+                                <h4>Ludwig-Maximilians-Universität – München, Deutschland</h4>
+                                <ul>
+                                    <li>Abschlussnote: 1,6 (Sehr gut).</li>
+                                    <li>Masterarbeit in Deep Learning, Forschung in computergestützter Biologie und
+                                        Bioinformatik.</li>
+                                    <li>Top 20% der Klasse von 153 Studierenden.</li>
+                                    <li>Verleihung des LMU SIST Studienabschluss-Stipendiums vom DAAD für akademische
+                                        Exzellenz.</li>
+                                    <li>Organisation und Moderation der Welcome-Veranstaltung 2022, mit erfolgreicher
+                                        Logistikplanung und Durchführung von Aktivitäten zur Einbindung und Orientierung
+                                        neuer Studierender.</li>
+                                    <li>Tutor für die Kurse “Machine Learning in Image Analysis” und “Introduction to
+                                        Single Cell RNA Sequence Data Analysis with ScanPy”.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="education-item">
+                            <div class="education-header">
+                                <h3>M. Sc Business Management</h3>
+                                <span>2020</span>
+                            </div>
+                            <div class="education-details">
+                                <h4>Rome Business School – Rom, Italien</h4>
+                                <ul>
+                                    <li>Abschlussnote: 27/30 (Sehr gut).</li>
+                                    <li><a href="https://basno.com/cvso8nyh" target="_blank">CFAI Foundations
+                                            Zertifizierung.</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="education-item">
+                            <div class="education-header">
+                                <h3>B. Sc Agriculture</h3>
+                                <span>2018</span>
+                            </div>
+                            <div class="education-details">
+                                <h4>Dr PDKV – Amravati, Indien</h4>
+                                <ul>
+                                    <li>Abschlussnote: 8,45/10 (Gut).</li>
+                                    <li>Kapitän des Badminton-Teams, Zweitplatzierte bei den
+                                        Universitätsmeisterschaften.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sprachen -->
+            <section class="section">
+                <h2 class="section-title">Sprachen</h2>
+                <div class="section-details">
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <h3>Englisch</h3>
+                            <p>Muttersprache</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Deutsch</h3>
+                            <p>B1 (Derzeit im Kurs eingeschrieben)</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Italienisch</h3>
+                            <p>B2 (Verhandlungssicher)</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Hindi</h3>
+                            <p>Muttersprache</p>
+                        </div>
+                        <div class="skill-card">
+                            <h3>Telugu</h3>
+                            <p>Muttersprache</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interessen -->
+            <section class="section">
+                <h2 class="section-title">Interessen</h2>
+                <div class="section-details">
+                    <div class="skill-card">
+                        <p>Stoizismus, Fitness, Lesen, Badminton, Kreatives Schreiben (1,6 Mio. Aufrufe auf Quora).</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- MAIN JS as ES Module-->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script type="module" src="main.js"></script>
     <script>
-        // Theme toggling
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.querySelector('.theme-toggle i');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                icon.className = 'fas fa-moon';
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.className = 'fas fa-sun';
-            }
-        }
-
         // Intersection Observer for scroll animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -759,7 +1217,7 @@
             observer.observe(section);
         });
 
-        // Smooth scroll for navigation
+        // Smooth scroll for any anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -769,25 +1227,21 @@
             });
         });
 
-        // No collapsible toggling for Profile, Skills, Languages, Interests.
-        // Only Work Experience and Education items are collapsible.
-
-        // Dropdown functionality for individual experiences and education items
+        // Expand/collapse items in Work/Education when clicked
         document.querySelectorAll('.experience-item, .education-item').forEach(item => {
             item.addEventListener('click', (e) => {
-                // Prevents toggling when clicking on a link
+                // Do not toggle if a link was clicked
                 if (e.target.closest('a')) {
                     return;
                 }
-                // Toggles the 'active' class
+                // Toggle "active"
                 item.classList.toggle('active');
 
-                // Highlights the outer container if any inner item is active
+                // Outer container highlight logic
                 const outerContainer = item.closest('.experience-container, .education-container');
                 if (item.classList.contains('active')) {
                     outerContainer.classList.add('active');
                 } else {
-                    // Checks if any other inner items are active
                     const anyActive = Array.from(outerContainer.children).some(child => child.classList.contains('active'));
                     if (!anyActive) {
                         outerContainer.classList.remove('active');
@@ -795,7 +1249,7 @@
                 }
             });
 
-            // Highlights outer container on hover
+            // Highlight outer container on hover
             const outerContainer = item.closest('.experience-container, .education-container');
             item.addEventListener('mouseenter', () => {
                 outerContainer.classList.add('hovered');
@@ -805,33 +1259,59 @@
             });
         });
 
-        // Functionality to expand/collapse all items in Work Experience and Education when their titles are clicked
+        // Expand/collapse all items in "Work Experience / Berufserfahrung" or "Education / Ausbildung"
         document.querySelectorAll('.section-title').forEach(title => {
             title.addEventListener('click', () => {
                 const section = title.parentElement;
                 const sectionName = title.textContent.trim();
 
-                // Applies this logic to Work Experience and Education sections
-                if (sectionName === 'Work Experience' || sectionName === 'Education') {
+                // Check if it's the relevant section
+                if (
+                    sectionName === 'Work Experience' ||
+                    sectionName === 'Education' ||
+                    sectionName === 'Berufserfahrung' ||
+                    sectionName === 'Ausbildung'
+                ) {
                     const container = section.querySelector('.experience-container, .education-container');
                     if (!container) return;
-
-                    // Determines if the section is already active (i.e., if any item is active)
                     const items = container.querySelectorAll('.experience-item, .education-item');
                     const anyActive = Array.from(items).some(item => item.classList.contains('active'));
 
                     if (anyActive) {
-                        // Collapses all items
                         items.forEach(item => item.classList.remove('active'));
                         container.classList.remove('active');
                     } else {
-                        // Expands all items
                         items.forEach(item => item.classList.add('active'));
                         container.classList.add('active');
                     }
                 }
             });
         });
+
+        // Toggle Language (with animation from .en to .de)
+        function toggleLanguage() {
+            const enContent = document.getElementById("content-en");
+            const deContent = document.getElementById("content-de");
+            const langButton = document.querySelector(".language-toggle");
+            const langButtonText = document.getElementById("lang-button-text");
+
+            // If currently showing EN, switch to DE
+            if (enContent.style.display !== "none") {
+                enContent.style.display = "none";
+                deContent.style.display = "block";
+                langButton.classList.remove("en");
+                langButton.classList.add("de");
+                langButtonText.textContent = "DE";
+            } else {
+                // Otherwise switch to EN
+                enContent.style.display = "block";
+                deContent.style.display = "none";
+                langButton.classList.remove("de");
+                langButton.classList.add("en");
+                langButtonText.textContent = "EN";
+            }
+        }
     </script>
 </body>
+
 </html>

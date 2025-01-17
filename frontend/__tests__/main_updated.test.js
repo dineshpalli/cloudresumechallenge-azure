@@ -16,7 +16,7 @@ describe('Visitor Counter Functionality', () => {
     global.fetch = fetchMock;
 
     // Spy on console
-    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
   });
 
   afterEach(() => {
@@ -53,7 +53,7 @@ describe('Visitor Counter Functionality', () => {
 
   test('updateCounter handles missing DOM element', () => {
     document.body.innerHTML = ''; // Remove counter element
-    const consoleSpyWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleSpyWarn = jest.spyOn(console, 'warn').mockImplementation(() => { });
 
     updateCounter('Test Message');
 
@@ -71,7 +71,7 @@ describe('Visitor Counter Functionality', () => {
 
     await getVisitCount('test-url');
 
-    // Instead of checking exactly for "210 Visit(s)", verify the format
+    // Instead of checking exactly for the number, verify the format
     expect(document.getElementById('counter').textContent).toMatch(/\d+\sVisit\(s\)/);
     expect(fetchMock).toHaveBeenCalledWith('test-url');
   });
