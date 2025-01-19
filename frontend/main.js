@@ -49,12 +49,14 @@ function toggleLanguage() {
     const langButtonText = document.getElementById("lang-button-text");
 
     if (enContent.style.display !== "none") {
+        // Switch to German
         enContent.style.display = "none";
         deContent.style.display = "block";
         langButton.classList.remove("en");
         langButton.classList.add("de");
         langButtonText.textContent = "DE";
     } else {
+        // Switch to English
         enContent.style.display = "block";
         deContent.style.display = "none";
         langButton.classList.remove("de");
@@ -73,13 +75,31 @@ export function triggerConfetti() {
     });
 }
 
+function getCurrentLanguage() {
+    // If the language toggle button has the class "de", treat that as German; otherwise, English
+    const langButton = document.querySelector(".language-toggle");
+    if (!langButton) return "en"; // fallback to English if no toggle found
+    return langButton.classList.contains("de") ? "de" : "en";
+}
+
 // Function to display the pop-up message
 export function showPopupMessage() {
     if (document.querySelector('.popup-message')) return;
 
+    // Decide which text to display based on the current language
+    const lang = getCurrentLanguage();
+
+    // Localized messages
+    const messages = {
+        en: '🎉 Haha, you found my “do nothing” button! Don’t fret – click on <strong>Work Experience</strong> or <strong>Education</strong> to know more!',
+        de: '🎉 Haha, sie haben meinen „Nichtstun“-Button entdeckt! Keine Sorge – klicke auf <strong>Berufserfahrung</strong> oder <strong>Ausbildung</strong>, um mehr zu erfahren!'
+    };
+
+    const popupMessage = messages[lang] || messages.en; // fallback to English if something goes wrong
+
     const popup = document.createElement('div');
     popup.classList.add('popup-message');
-    popup.innerHTML = '🎉 Haha, you found my “do nothing” button! Don’t fret – click on <strong>Work Experience</strong> or <strong>Education</strong> to know more!';
+    popup.innerHTML = popupMessage;
     popup.style.position = 'fixed';
     popup.style.top = '0%';
     popup.style.left = '50%';
@@ -98,6 +118,7 @@ export function showPopupMessage() {
         popup.remove();
     }, 4000);
 }
+
 
 // Initialize event listeners with dependency injection
 export function initializeEventListeners({
