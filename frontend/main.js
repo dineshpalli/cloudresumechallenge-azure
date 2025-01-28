@@ -91,8 +91,10 @@ export function showPopupMessage() {
 
     // Localized messages
     const messages = {
-        en: '🎉 Haha, you found my “do nothing” button! Don’t fret – click on <strong>Work Experience</strong> or <strong>Education</strong> to know more!',
-        de: '🎉 Haha, Sie haben meinen „Nichtstun“-Taste entdeckt! Keine Sorge – klicke auf <strong>Berufserfahrung</strong> oder <strong>Ausbildung</strong>, um weitere Informationen zu erhalten!'
+        en: 'Well, look at you, explorer of random buttons! Unfortunately, this one does… absolutely nothing. How about trying <strong>Work Experience</strong> or <strong>Education?</strong>',
+        // en: '🎉 Haha, you found my “do nothing” button! Don’t fret – click on <strong>Work Experience</strong> or <strong>Education</strong> to know more!',
+        // en: 'Wow, you really click on everything, huh? This button’s about as useful as a chocolate teapot. Why not check out <strong>Work Experience</strong> or <strong>Education</strong> instead?',
+        de: 'Wow, Sie klicken wirklich überall, oder? Na schön, dieser Button ist so hilfreich wie ein Regenschirm mit Löchern. Probieren Sie lieber <strong>‚Berufserfahrung‘</strong> oder <strong>‚Ausbildung‘</strong>?'
     };
 
     const popupMessage = messages[lang] || messages.en; // fallback to English if something goes wrong
@@ -116,7 +118,7 @@ export function showPopupMessage() {
 
     setTimeout(() => {
         popup.remove();
-    }, 4000);
+    }, 8000);
 }
 
 
