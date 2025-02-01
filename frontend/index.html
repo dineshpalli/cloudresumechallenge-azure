@@ -433,6 +433,8 @@
             align-items: center;
             margin-bottom: 0.5rem;
             transition: color 0.3s;
+            /* Let them wrap on smaller screens */
+            flex-wrap: wrap;
         }
 
         .experience-header:hover h3,
@@ -491,6 +493,21 @@
             height: 100% !important;
             z-index: 1500;
             pointer-events: none;
+        }
+
+        /* Responsive tweak: stack them (title above the date) below 600px */
+        /* Most developers use max-width: 768px so that smaller tablets and older iPads also get the same stacked, mobile layout. Update if needed */
+        @media (max-width: 600px) {
+            .experience-header {
+                flex-direction: column;
+                align-items: flex-start;
+                /* text lines up nicely on the left */
+            }
+
+            .experience-header span {
+                margin-top: 0.25rem;
+                /* little breathing room under the job title */
+            }
         }
     </style>
 </head>
@@ -613,7 +630,10 @@
 
             <!-- Work Experience Section -->
             <section class="section">
-                <h2 class="section-title">Work Experience</h2>
+                <h2 class="section-title">
+                    Work Experience
+                    <!-- <i class="fa-solid fa-hand-point-left" style="margin-left: 0.5rem;"></i> -->
+                </h2>
                 <div class="section-details">
                     <div class="experience-container">
                         <div class="experience-item">
@@ -741,7 +761,10 @@
 
             <!-- Education Section -->
             <section class="section">
-                <h2 class="section-title">Education</h2>
+                <h2 class="section-title">
+                    Education
+                    <!-- <i class="fa-solid fa-hand-point-left" style="margin-left: 0.5rem;"></i> -->
+                </h2>
                 <div class="section-details">
                     <div class="education-container">
                         <div class="education-item">
@@ -936,7 +959,10 @@
 
             <!-- Berufserfahrung -->
             <section class="section">
-                <h2 class="section-title">Berufserfahrung</h2>
+                <h2 class="section-title">
+                    Berufserfahrung
+                    <!-- <i class="fa-solid fa-hand-point-left" style="margin-left: 0.5rem;"></i> -->
+                </h2>
                 <div class="section-details">
                     <div class="experience-container">
                         <!-- Business Analyst -->
@@ -1098,7 +1124,10 @@
 
             <!-- Ausbildung -->
             <section class="section">
-                <h2 class="section-title">Ausbildung</h2>
+                <h2 class="section-title">
+                    Ausbildung
+                    <!-- <i class="fa-solid fa-hand-point-left" style="margin-left: 0.5rem;"></i> -->
+                </h2>
                 <div class="section-details">
                     <div class="education-container">
                         <div class="education-item">
