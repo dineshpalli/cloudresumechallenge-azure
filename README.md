@@ -1,6 +1,8 @@
 # Cloud Resume Challenge with Microsoft Azure: My Journey, Struggles, and Insights
 
-![image](/Users/dineshpalli/Downloads/dpdata/cloudresumechallenge/cloudresumechallenge-azure/DineshPalli_CRC.png)
+![image](https://raw.githubusercontent.com/dineshpalli/cloudresumechallenge-azure/refs/heads/main/DineshPalli_CRC.png?token=GHSAT0AAAAAADBDGPQ5NFVXTZL4HSMEXJACZ7W3PBQ)
+
+ *Architecture of the Cloud Resume Challenge on Azure. The static resume site is hosted on Azure Storage and exposed to the web via a content delivery network service (Azure Front Door or CDN) for global, secure access. An Azure Function app provides a Python API for the visitor counter, with data persisted in an Azure Cosmos DB database. All components (storage, function, database, networking) are defined as code and deployed through CI/CD pipelines.*
 
 ## Introduction
 
@@ -38,8 +40,6 @@ Here’s a quick rundown of the **16 steps** in the Azure edition of the Cloud R
 14. **CI/CD (Back End):** Set up a CI/CD pipeline to automate deployment of your back-end (the Azure Function and related infrastructure).
 15. **CI/CD (Front End):** Set up a CI/CD pipeline to automate deployment of your front-end (the static website).
 16. **Blog Post:** Write a blog (or LinkedIn article!) about your journey and lessons learned.
-
- ([image]()) *Architecture of the Cloud Resume Challenge on Azure. The static resume site is hosted on Azure Storage and exposed to the web via a content delivery network service (Azure Front Door or CDN) for global, secure access. An Azure Function app provides a Python API for the visitor counter, with data persisted in an Azure Cosmos DB database. All components (storage, function, database, networking) are defined as code and deployed through CI/CD pipelines.* 
 
 As you can see, the challenge is an **end-to-end project** touching almost every aspect of cloud and web development: front-end design, back-end APIs, databases, networking, authentication, automation, and more. It’s intense. No tutorials, no courses, just dragging myself through dirt? So, I finished cloud resume challenge in MS Azure - the turnkey github repo can be found here - feel free to fork / clone / star the repo. I knew I would hit roadblocks in each of these areas – and indeed I did. But with each obstacle came an opportunity to learn and grow. There were severael moments across the challenge where i had to show myself that I am with it or on it, which helped me learn a lot and not give up at the slightest sight of challenge / discomfort. This made me imbue a lot of learning and experience like, figure out where something broke, what broke, why it broke and then devising plans to how to fix the broken things, doing 'smoke-tests' and fixtures.
 
